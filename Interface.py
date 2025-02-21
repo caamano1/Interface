@@ -3,12 +3,13 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 
-
-janela = tk.Tk()
-janela.title("Gerenciador de Tarefas")
-janela.configure(bg="white")
-
 ARQUIVO_JSON = "tarefas.json"
+
+def carregar_tarefas():
+    if os.path.exists(ARQUIVO_JSON):
+        with open(ARQUIVO_JSON, "r") as arquivo:
+            return json.load(arquivo)
+    return []
 
 def salvar_tarefas(tarefas):
     with open(ARQUIVO_JSON, "w") as arquivo:
@@ -63,5 +64,32 @@ def excluir_tarefa():
     tarefas = [tarefa for tarefa in tarefas if tarefa["status"] != "Concluída"]
     salvar_tarefas(tarefas)
     atualizar_lista()
+
+janela = tk.Tk()
+janela.title("Gerenciador de Tarefas")
+janela.configure(bg="white")
+
+frame_topo = tk.Frame(janela)
+frame_topo.pack(pady=10)
+
+entrada_tarefa = tk.Entry(frame_topo, width=40)
+entrada_tarefa.pack(side=tk.LEFT, padx=5)
+
+botao_adicionar = tk.Button(frame_topo, text="Adicionar", command=adicionar_tarefa)
+botao_adicionar.pack(side=tk.LEFT)
+
+frame_tarefas = tk.Frame(janela)
+frame_tarefas.pack(pady=10)
+
+texto_tarefas = tk.Text(janela, width=50, height=10)
+texto_tarefas.pack(pady=5)
+
+botao_listar = tk.Button(janela, text="Listar Tarefas", command=listar_tarefas)
+botao_listar.pack(pady=5)
+
+botao_excluir = tk.Button(janela, text="Excluir Concluídas", command=excluir_tarefa)
+botao_excluir.pack(pady=5)
+
+atualizar_lista()
 
 janela.mainloop()
